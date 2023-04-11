@@ -1,11 +1,16 @@
 import { App, Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
+import { projectConfig } from './sonarqube-cicd/config/config';
+import { SonarQubeConstruct } from './sonarqube-cicd/sonarqube';
 
 export class MyStack extends Stack {
   constructor(scope: Construct, id: string, props: StackProps = {}) {
     super(scope, id, props);
 
     // define resources here...
+    new SonarQubeConstruct(this, 'sonarqube', {
+        config: projectConfig
+    })
   }
 }
 
