@@ -9,7 +9,8 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   devDeps: [
     '@types/aws-lambda',
     'aws-lambda',
-    'aws-sdk'
+    'aws-sdk',
+    'esbuild'
   ],             /* Build dependencies for this module. */
   // packageName: undefined,  /* The "name" in package.json. */
 });

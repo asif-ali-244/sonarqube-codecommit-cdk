@@ -1,1 +1,1 @@
-# replace this
+# SonarCloud integration with CodeCommit

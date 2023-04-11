@@ -5,9 +5,7 @@ import { Rule } from "aws-cdk-lib/aws-events";
 import { LambdaFunction } from "aws-cdk-lib/aws-events-targets";
 import { Secret } from "aws-cdk-lib/aws-secretsmanager";
 import { Construct } from "constructs";
-import { ApprovePRLambdaFunction } from "./approve_pr_lambda";
-import { TriggerBuildLambdaFunction } from "./trigger_build_lambda";
-
+import { LambdaFunctions } from "./lambdas/lambda";
 
 export interface projectConfigProps {
     repository: string
@@ -58,16 +56,12 @@ export class SonarQubeConstruct extends Construct {
                 projectName: `${element.repository}-sonarqube`,
                 description: `sonar scanner for ${element.repository}`,
             });
+            secret.grantRead(project.role!)
             projectMap.set(repo, project);
         })
 
-        const { approvePrLambda } = new ApprovePRLambdaFunction(this, 'approve-pr-lambda', {
+        const { approvePrLambda, buildTriggerLambda } = new LambdaFunctions(this, 'lambdas', {
             projectMap
-        });
-
-        const { buildTriggerLambda } = new TriggerBuildLambdaFunction(this, 'trigger-build-lambda', {
-            projectMap,
-            approvePrLambda,
         });
 
         // event rules
