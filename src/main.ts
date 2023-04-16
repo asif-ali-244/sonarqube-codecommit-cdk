@@ -9,7 +9,8 @@ export class MyStack extends Stack {
 
     // define resources here...
     new SonarQubeConstruct(this, 'sonarqube', {
-        config: projectConfig
+        config: projectConfig,
+        sonarCloud: false
     })
   }
 }
