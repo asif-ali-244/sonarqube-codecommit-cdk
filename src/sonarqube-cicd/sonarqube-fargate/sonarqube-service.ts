@@ -47,6 +47,7 @@ export class SonarQubeService extends Construct {
             },
             credentials: Credentials.fromGeneratedSecret(DB_USER),
             defaultDatabaseName: "sonar",
+            storageEncrypted: true,
             deletionProtection: false
         })
 
