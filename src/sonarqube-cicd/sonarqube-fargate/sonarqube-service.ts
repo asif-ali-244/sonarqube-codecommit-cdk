@@ -1,4 +1,4 @@
-import { Aspects} from "aws-cdk-lib";
+import { Aspects, Tags} from "aws-cdk-lib";
 import { InstanceType, ISubnet, IVpc, Port, SecurityGroup } from "aws-cdk-lib/aws-ec2";
 import { ContainerImage, Secret, UlimitName } from "aws-cdk-lib/aws-ecs";
 import { ApplicationLoadBalancedFargateService } from "aws-cdk-lib/aws-ecs-patterns";
@@ -20,6 +20,8 @@ export class SonarQubeService extends Construct {
     }
     constructor(scope: Construct, id: string, props: SonarQubeServiceProps) {
         super(scope, id);
+
+        Tags.of(this).add('service','sonarqube')
 
         const dbSecurityGroup = new SecurityGroup(this, 'dbSecurityGroup', {
             vpc: props.vpc!,
