@@ -28,4 +28,11 @@ When you create a PR it will trigger a codebuild project that would validate you
 ## Configuration
 
 Include the configuration of your project/repositories that you want to scan in `sonarqube-cicd-cdk/src/sonarqube-cicd/config/config.ts`. You can put multiple repositories and the corresponding SonarQube configurations in the file using list of objects.
-`sonarqube-cicd-cdk/src/sonarqube-cicd/config/buildSpec/sonarqube.yml` has the BuildSpec yml of the build that will run on PR creation.
+`sonarqube-cicd-cdk/src/sonarqube-cicd/config/buildSpec/sonarqube.yml` has the BuildSpec yml of the build that will run on PR creation
+
+## Steps
+1. Bootstrap the environment
+2. Update the `sonarqube-cicd-cdk/src/sonarqube-cicd/config/config.ts` according to your repository configuration.
+3. Open the fargate cluster having the sonarqube and create organization and project.
+4. Get the token from sonarqube and update the secrets
+5. Create a PR and it will trigger the sonarqube validation automatically.

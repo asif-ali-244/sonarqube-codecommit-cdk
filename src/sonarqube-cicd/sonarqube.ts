@@ -44,6 +44,7 @@ interface SonarQubeConstructProps {
     sonarCloud: boolean
     vpc?: IVpc
     privateSubnets?: ISubnet[]
+    onBranches?: string[]
 }
 
 export class SonarQubeConstruct extends Construct {
@@ -119,18 +120,38 @@ export class SonarQubeConstruct extends Construct {
         });
 
         // event rules
-        const pr_rule = new Rule(this, 'pr-event-rule', {
-            description: 'A rule to trigger on pull requests creation/update for pr validation',
-            eventPattern: {
-                detailType: ['CodeCommit Pull Request State Change'],
-                resources: Array.from(projectMap.keys()).map((repository) => repository.repositoryArn),
-                source: ['aws.codecommit'],
-                detail: {
-                    event: ['pullRequestCreated', 'pullRequestSourceBranchUpdated'],
+        if (props.onBranches) {
+            props.onBranches.forEach((branch) => {
+                const pr_rule = new Rule(this, `pr-event-rule-${branch}`, {
+                    description: 'A rule to trigger on pull requests creation/update for pr validation',
+                    eventPattern: {
+                        detailType: ['CodeCommit Pull Request State Change'],
+                        resources: Array.from(projectMap.keys()).map((repository) => repository.repositoryArn),
+                        source: ['aws.codecommit'],
+                        detail: {
+                            event: ['pullRequestCreated', 'pullRequestSourceBranchUpdated'],
+                            destinationReference: `refs/heads/${branch}`,
+                        },
+                    },
+                });
+                pr_rule.addTarget(new LambdaFunction(buildTriggerLambda));
+            })
+
+        } else {
+            const pr_rule = new Rule(this, 'pr-event-rule', {
+                description: 'A rule to trigger on pull requests creation/update for pr validation',
+                eventPattern: {
+                    detailType: ['CodeCommit Pull Request State Change'],
+                    resources: Array.from(projectMap.keys()).map((repository) => repository.repositoryArn),
+                    source: ['aws.codecommit'],
+                    detail: {
+                        event: ['pullRequestCreated', 'pullRequestSourceBranchUpdated'],
+                        destinationReference: "refs/heads/main",
+                    },
                 },
-            },
-        });
-        pr_rule.addTarget(new LambdaFunction(buildTriggerLambda));
+            });
+            pr_rule.addTarget(new LambdaFunction(buildTriggerLambda));
+        }
 
         const pr_build_rule = new Rule(this, 'pr-build-rule', {
             description: 'A rule that responds to codebuild status for pr valiation',

@@ -2,10 +2,19 @@ import { App, Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { projectConfig } from './sonarqube-cicd/config/config';
 import { SonarQubeConstruct } from './sonarqube-cicd/sonarqube';
+import { SubnetType, Vpc } from 'aws-cdk-lib/aws-ec2';
 
 export class MyStack extends Stack {
   constructor(scope: Construct, id: string, props: StackProps = {}) {
     super(scope, id, props);
+
+    // const vpc = Vpc.fromLookup(this, 'vpc', {
+    //     vpcId: '23234324'
+    // })
+
+    // const subnets = vpc.selectSubnets({
+    //     subnetType: SubnetType.PRIVATE_WITH_EGRESS
+    // }).subnets;
 
     // define resources here...
     new SonarQubeConstruct(this, 'sonarqube', {
