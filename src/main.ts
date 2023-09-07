@@ -8,8 +8,10 @@ export class MyStack extends Stack {
   constructor(scope: Construct, id: string, props: StackProps = {}) {
     super(scope, id, props);
 
+    // configure VPC properties below if already exist
+
     // const vpc = Vpc.fromLookup(this, 'vpc', {
-    //     vpcId: '23234324'
+    //     vpcId: 'vpc-09e293672ffa2b323'
     // })
 
     // const subnets = vpc.selectSubnets({
@@ -19,7 +21,10 @@ export class MyStack extends Stack {
     // define resources here...
     new SonarQubeConstruct(this, 'sonarqube', {
         config: projectConfig,
-        sonarCloud: false
+        sonarCloud: false,
+        // vpc,
+        // privateSubnets: subnets,
+        // onBranches: ["dev", "qa"]
     })
   }
 }
